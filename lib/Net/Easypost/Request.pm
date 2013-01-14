@@ -1,6 +1,6 @@
 package Net::Easypost::Request;
 {
-  $Net::Easypost::Request::VERSION = '0.01';
+  $Net::Easypost::Request::VERSION = '0.02';
 }
 
 use 5.014;
@@ -26,7 +26,7 @@ has ua => (
 has endpoint => (
     is => 'ro',
     lazy => 1,
-    default => sub { 'www.easypost.co/api' }
+    default => sub { 'www.geteasypost.com/api' }
 );
 
 
@@ -67,7 +67,6 @@ sub get {
 1;
 
 __END__
-
 =pod
 
 =head1 NAME
@@ -76,7 +75,7 @@ Net::Easypost::Request - Request role for Net::Easypost
 
 =head1 VERSION
 
-version 0.01
+version 0.02
 
 =head1 ATTRIBUTES
 
@@ -86,7 +85,7 @@ A user agent attribute. Defaults to L<Mojo::UserAgent>.
 
 =head2 endpoint
 
-The Easypost service endpoint. Defaults to 'https://www.easypost.co/api'
+The Easypost service endpoint. Defaults to 'https://www.geteasypost.com/api'
 
 =head1 METHODS
 
@@ -114,3 +113,4 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
+

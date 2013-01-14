@@ -1,6 +1,6 @@
 package Net::Easypost::Label;
 {
-  $Net::Easypost::Label::VERSION = '0.01';
+  $Net::Easypost::Label::VERSION = '0.02';
 }
 
 use 5.014;
@@ -72,7 +72,6 @@ sub save {
 1;
 
 __END__
-
 =pod
 
 =head1 NAME
@@ -81,7 +80,7 @@ Net::Easypost::Label - Object represents an Easypost label
 
 =head1 VERSION
 
-version 0.01
+version 0.02
 
 =head1 ATTRIBUTES
 
@@ -139,3 +138,4 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
+
