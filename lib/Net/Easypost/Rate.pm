@@ -1,6 +1,6 @@
 package Net::Easypost::Rate;
 {
-  $Net::Easypost::Rate::VERSION = '0.02';
+  $Net::Easypost::Rate::VERSION = '0.03';
 }
 
 use 5.014;
@@ -48,7 +48,7 @@ Net::Easypost::Rate - An object to represent an Easypost shipping rate
 
 =head1 VERSION
 
-version 0.02
+version 0.03
 
 =head1 ATTRIBUTES
 

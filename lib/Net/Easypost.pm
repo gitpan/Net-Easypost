@@ -1,6 +1,6 @@
 package Net::Easypost;
 {
-  $Net::Easypost::VERSION = '0.02';
+  $Net::Easypost::VERSION = '0.03';
 }
 
 use 5.014;
@@ -141,7 +141,7 @@ Net::Easypost - Perl client for the Easypost.co service
 
 =head1 VERSION
 
-version 0.02
+version 0.03
 
 =head1 SYNOPSIS
 
@@ -196,7 +196,7 @@ version 0.02
 
 =head1 OVERVIEW
 
-This is a Perl client for the postage API at L<Easypost|https://www.easypost.co>. Consider this
+This is a Perl client for the postage API at L<Easypost|https://www.geteasypost.com>. Consider this
 API at beta quality mostly because some of these library calls have an inconsistent input
 parameter interface which I'm not super happy about. Still, there's enough here to get 
 meaningful work done, and any future changes will be fairly cosmetic.
@@ -304,7 +304,7 @@ L<https://github.com/mrallen1/Net-Easypost/issues>
 
 =over
 
-=item * L<Easypost API docs|https://www.easypost.co/api>
+=item * L<Easypost API docs|https://www.geteasypost.com/api>
 
 =back
 

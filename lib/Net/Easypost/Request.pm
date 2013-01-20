@@ -1,6 +1,6 @@
 package Net::Easypost::Request;
 {
-  $Net::Easypost::Request::VERSION = '0.02';
+  $Net::Easypost::Request::VERSION = '0.03';
 }
 
 use 5.014;
@@ -8,7 +8,6 @@ use 5.014;
 use Moo::Role;
 use Mojo::UserAgent;
 use Carp qw(croak);
-use Data::Printer;
 
 # ABSTRACT: Request role for Net::Easypost
 
@@ -40,11 +39,12 @@ sub post {
         $params, 
     );
 
-    my $json = $tx->res->json;
+    if ( ! $tx->success ) {
+        my ($err, $code) = $tx->error;
+        croak "FATAL: " . $self->endpoint . $operation . " returned $code: $err";
+    }
 
-    croak "FATAL: " . $json->{error} if exists $json->{error};
-
-    return $json;
+    return $tx->res->json;
 }
 
 sub _build_url {
@@ -75,7 +75,7 @@ Net::Easypost::Request - Request role for Net::Easypost
 
 =head1 VERSION
 
-version 0.02
+version 0.03
 
 =head1 ATTRIBUTES
 

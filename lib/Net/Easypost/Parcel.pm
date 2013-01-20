@@ -1,6 +1,6 @@
 package Net::Easypost::Parcel;
 {
-  $Net::Easypost::Parcel::VERSION = '0.02';
+  $Net::Easypost::Parcel::VERSION = '0.03';
 }
 
 use 5.014;
@@ -66,7 +66,7 @@ Net::Easypost::Parcel - An object to represent an Easypost parcel
 
 =head1 VERSION
 
-version 0.02
+version 0.03
 
 =head1 ATTRIBUTES
 
@@ -88,7 +88,7 @@ The weight of the parcel in ounces. (There are 16 ounces in a U.S. pound.)
 
 =head2 predefined_package
 
-A carrier specific flat-rate package name. See L<https://www.easypost.co/api> for these.
+A carrier specific flat-rate package name. See L<https://www.geteasypost.com/api> for these.
 
 =head1 METHODS
 
