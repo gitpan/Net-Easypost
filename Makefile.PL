@@ -9,7 +9,7 @@ use ExtUtils::MakeMaker 6.30;
 
 
 my %WriteMakefileArgs = (
-  "ABSTRACT" => "Perl client for the Easypost.co service",
+  "ABSTRACT" => "Perl client for the Easypost web service",
   "AUTHOR" => "Mark Allen <mrallen1\@yahoo.com>",
   "BUILD_REQUIRES" => {},
   "CONFIGURE_REQUIRES" => {
@@ -21,15 +21,29 @@ my %WriteMakefileArgs = (
   "NAME" => "Net::Easypost",
   "PREREQ_PM" => {
     "Hash::Merge::Simple" => "0.051",
-    "Mojo" => "3.62",
+    "Mojolicious" => "3.62",
     "Moo" => "1.000006"
   },
-  "VERSION" => "0.03",
+  "TEST_REQUIRES" => {},
+  "VERSION" => "0.04",
   "test" => {
     "TESTS" => "t/*.t"
   }
 );
 
+
+unless ( eval { ExtUtils::MakeMaker->VERSION(6.63_03) } ) {
+  my $tr = delete $WriteMakefileArgs{TEST_REQUIRES};
+  my $br = $WriteMakefileArgs{BUILD_REQUIRES};
+  for my $mod ( keys %$tr ) {
+    if ( exists $br->{$mod} ) {
+      $br->{$mod} = $tr->{$mod} if $tr->{$mod} > $br->{$mod};
+    }
+    else {
+      $br->{$mod} = $tr->{$mod};
+    }
+  }
+}
 
 unless ( eval { ExtUtils::MakeMaker->VERSION(6.56) } ) {
   my $br = delete $WriteMakefileArgs{BUILD_REQUIRES};

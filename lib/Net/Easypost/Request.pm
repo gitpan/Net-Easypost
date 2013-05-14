@@ -1,6 +1,6 @@
 package Net::Easypost::Request;
 {
-  $Net::Easypost::Request::VERSION = '0.03';
+  $Net::Easypost::Request::VERSION = '0.04';
 }
 
 use 5.014;
@@ -75,7 +75,7 @@ Net::Easypost::Request - Request role for Net::Easypost
 
 =head1 VERSION
 
-version 0.03
+version 0.04
 
 =head1 ATTRIBUTES
 
