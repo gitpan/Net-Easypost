@@ -1,6 +1,6 @@
 package Net::Easypost::Request;
 {
-  $Net::Easypost::Request::VERSION = '0.04';
+  $Net::Easypost::Request::VERSION = '0.05';
 }
 
 use 5.014;
@@ -34,9 +34,9 @@ sub post {
     my $operation = shift;
     my $params = shift;
 
-    my $tx = $self->ua->post_form(
+    my $tx = $self->ua->post(
         $self->_build_url($operation), 
-        $params, 
+        form => $params, 
     );
 
     if ( ! $tx->success ) {
@@ -75,7 +75,7 @@ Net::Easypost::Request - Request role for Net::Easypost
 
 =head1 VERSION
 
-version 0.04
+version 0.05
 
 =head1 ATTRIBUTES
 
