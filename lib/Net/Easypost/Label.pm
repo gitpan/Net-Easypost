@@ -1,6 +1,6 @@
 package Net::Easypost::Label;
 {
-  $Net::Easypost::Label::VERSION = '0.05';
+  $Net::Easypost::Label::VERSION = '0.06';
 }
 
 use 5.014;
@@ -80,7 +80,7 @@ Net::Easypost::Label - Object represents an Easypost label
 
 =head1 VERSION
 
-version 0.05
+version 0.06
 
 =head1 ATTRIBUTES
 
