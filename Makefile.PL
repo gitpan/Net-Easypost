@@ -21,11 +21,12 @@ my %WriteMakefileArgs = (
   "NAME" => "Net::Easypost",
   "PREREQ_PM" => {
     "Hash::Merge::Simple" => "0.051",
+    "IO::Socket::SSL" => "1.89",
     "Mojolicious" => "3.62",
     "Moo" => "1.000006"
   },
   "TEST_REQUIRES" => {},
-  "VERSION" => "0.06",
+  "VERSION" => "0.07",
   "test" => {
     "TESTS" => "t/*.t"
   }

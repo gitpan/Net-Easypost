@@ -22,6 +22,7 @@
       "runtime" : {
          "requires" : {
             "Hash::Merge::Simple" : "0.051",
+            "IO::Socket::SSL" : "1.89",
             "Mojolicious" : "3.62",
             "Moo" : "1.000006",
             "perl" : "5.014"
@@ -41,6 +42,6 @@
          "web" : "https://github.com/mrallen1/Net-Easypost"
       }
    },
-   "version" : "0.06"
+   "version" : "0.07"
 }
 

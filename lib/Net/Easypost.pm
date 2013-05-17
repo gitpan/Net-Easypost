@@ -1,6 +1,6 @@
 package Net::Easypost;
 {
-  $Net::Easypost::VERSION = '0.06';
+  $Net::Easypost::VERSION = '0.07';
 }
 
 use 5.014;
@@ -141,7 +141,7 @@ Net::Easypost - Perl client for the Easypost web service
 
 =head1 VERSION
 
-version 0.06
+version 0.07
 
 =head1 SYNOPSIS
 

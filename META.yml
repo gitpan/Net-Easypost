@@ -14,6 +14,7 @@ meta-spec:
 name: Net-Easypost
 requires:
   Hash::Merge::Simple: 0.051
+  IO::Socket::SSL: 1.89
   Mojolicious: 3.62
   Moo: 1.000006
   perl: 5.014
@@ -21,4 +22,4 @@ resources:
   bugtracker: https://rt.cpan.org/Public/Dist/Display.html?Name=Net-Easypost
   homepage: https://metacpan.org/dist/Net-Easypost
   repository: git://github.com/mrallen1/Net-Easypost.git
-version: 0.06
+version: 0.07
