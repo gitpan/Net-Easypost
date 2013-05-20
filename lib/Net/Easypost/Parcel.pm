@@ -1,6 +1,6 @@
 package Net::Easypost::Parcel;
 {
-  $Net::Easypost::Parcel::VERSION = '0.07';
+  $Net::Easypost::Parcel::VERSION = '0.08';
 }
 
 use 5.014;
@@ -66,7 +66,7 @@ Net::Easypost::Parcel - An object to represent an Easypost parcel
 
 =head1 VERSION
 
-version 0.07
+version 0.08
 
 =head1 ATTRIBUTES
 

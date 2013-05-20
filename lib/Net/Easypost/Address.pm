@@ -1,6 +1,6 @@
 package Net::Easypost::Address;
 {
-  $Net::Easypost::Address::VERSION = '0.07';
+  $Net::Easypost::Address::VERSION = '0.08';
 }
 
 use 5.014;
@@ -114,7 +114,7 @@ Net::Easypost::Address - Class to represent an Easypost address
 
 =head1 VERSION
 
-version 0.07
+version 0.08
 
 =head1 ATTRIBUTES
 
