@@ -5,6 +5,7 @@ META.json
 META.yml
 Makefile.PL
 README
+cpanfile
 dist.ini
 lib/Net/Easypost.pm
 lib/Net/Easypost/Address.pm
@@ -14,4 +15,5 @@ lib/Net/Easypost/Rate.pm
 lib/Net/Easypost/Request.pm
 t/00-load.t
 t/01-basic.t
+t/02-rates.t
 weaver.ini

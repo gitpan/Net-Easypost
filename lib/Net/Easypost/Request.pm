@@ -1,6 +1,6 @@
 package Net::Easypost::Request;
 {
-  $Net::Easypost::Request::VERSION = '0.08';
+  $Net::Easypost::Request::VERSION = '0.09';
 }
 
 use 5.014;
@@ -67,6 +67,7 @@ sub get {
 1;
 
 __END__
+
 =pod
 
 =head1 NAME
@@ -75,7 +76,7 @@ Net::Easypost::Request - Request role for Net::Easypost
 
 =head1 VERSION
 
-version 0.08
+version 0.09
 
 =head1 ATTRIBUTES
 
@@ -113,4 +114,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

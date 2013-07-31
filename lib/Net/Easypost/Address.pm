@@ -1,6 +1,6 @@
 package Net::Easypost::Address;
 {
-  $Net::Easypost::Address::VERSION = '0.08';
+  $Net::Easypost::Address::VERSION = '0.09';
 }
 
 use 5.014;
@@ -106,6 +106,7 @@ sub merge {
 1;
 
 __END__
+
 =pod
 
 =head1 NAME
@@ -114,7 +115,7 @@ Net::Easypost::Address - Class to represent an Easypost address
 
 =head1 VERSION
 
-version 0.08
+version 0.09
 
 =head1 ATTRIBUTES
 
@@ -190,4 +191,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

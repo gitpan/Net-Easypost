@@ -1,6 +1,6 @@
 package Net::Easypost;
 {
-  $Net::Easypost::VERSION = '0.08';
+  $Net::Easypost::VERSION = '0.09';
 }
 
 use 5.014;
@@ -57,9 +57,13 @@ sub get_rates {
     my $self = shift;
 
     my $params;
-    if ( scalar @_ == 1 && ref( $params = shift ) ne 'HASH' ) {
-        # we did the assignment here ^^^^ so if this is *not* a hashref, croak 
-        croak 'get_rates expects a hashref not a '. ref($params) .'\n';
+    if ( scalar @_ == 1 ) {
+        if ( ref( $_[0] ) ne 'HASH' ) {
+            croak 'get_rates expects a hashref not a '. ref($params) .'\n';
+        }
+        else {
+            $params = shift;
+        }
     }
     else {
         $params = { @_ };
@@ -133,6 +137,7 @@ sub list_labels {
 1;
 
 __END__
+
 =pod
 
 =head1 NAME
@@ -141,7 +146,7 @@ Net::Easypost - Perl client for the Easypost web service
 
 =head1 VERSION
 
-version 0.08
+version 0.09
 
 =head1 SYNOPSIS
 
@@ -320,4 +325,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-
