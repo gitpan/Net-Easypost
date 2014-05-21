@@ -1,20 +1,16 @@
-package Net::Easypost;
-{
-  $Net::Easypost::VERSION = '0.09';
-}
-
-use 5.014;
-
-use Moo;
-use Hash::Merge::Simple qw(merge);
+package Net::Easypost v0.0.10;
+$Net::Easypost::VERSION = '0.10';
+use Data::Dumper;
 use Carp qw(croak);
+use Hash::Merge::Simple qw(merge);
+use Moo;
 
 use Net::Easypost::Address;
+use Net::Easypost::Label;
 use Net::Easypost::Parcel;
 use Net::Easypost::Rate;
-use Net::Easypost::Label;
-
-with('Net::Easypost::Request');
+use Net::Easypost::Request;
+use Net::Easypost::Shipment;
 
 # ABSTRACT: Perl client for the Easypost web service
 
@@ -22,34 +18,28 @@ with('Net::Easypost::Request');
 
 has 'access_code' => (
     is => 'ro',
-    required => 1,
+);
+
+
+has requestor => (
+    is      => 'ro',
+    lazy    => 1,
+    default => sub { return Net::Easypost::Request->new }
 );
 
 
 sub verify_address {
-    my $self = shift;
-    my $params = shift;
+    my ($self, $params) = @_;
 
-    my $address;
     if ( ref($params) eq 'HASH' ) {
-        $address = Net::Easypost::Address->new( $params );
+        return Net::Easypost::Address->new( $params )->verify;
     }
     elsif ( ref($params) eq 'Net::Easypost::Address' ) {
-        $address = $params;
+        return $params->verify;
     }
     else {
-        croak 'verify_address expects either a hashref or an instance of Net::Easypost::Address\n';
+        croak "verify_address expects either a hashref or an instance of Net::Easypost::Address\n";
     }
-
-    my $new = Net::Easypost::Address->new(
-        $self->post(
-            '/address/verify', 
-            $address->serialize([qw(street1 street2 city state zip)])
-        )->{'address'}
-    );
-
-    return $new->merge($address, [qw(phone name role)]);
-
 }
 
 
@@ -69,58 +59,35 @@ sub get_rates {
         $params = { @_ };
     }
 
-    my $to = delete $params->{to};
-
-    croak $to->as_string . ' is not in the "to" role\n' if $to->role ne 'to';
-    
-    my $from = delete $params->{from};
-
-    croak $from->as_string . ' is not in the "from" role\n' if $from->role ne 'from';
-
-    my $parcel = delete $params->{parcel};
-
-    my $rates = $self->post('/postage/rates', merge(
-        $to->serialize(['zip']),
-        $from->serialize(['zip']),
-        $parcel->serialize)
-    )->{'rates'};
-
-    return map { 
-        Net::Easypost::Rate->new(
-            carrier => $_->{carrier},
-            rate => $_->{rate},
-            service => $_->{service}
-        )                                   } @{ $rates };
-
+    return Net::Easypost::Shipment->new(
+        to_address   => $params->{to},
+        from_address => $params->{from},
+        parcel       => $params->{parcel},
+    )->rates;
 }
 
 
 sub buy_label {
-    my $self = shift;
+    my ($self, $shipment, %options) = @_;
 
-    my $resp = $self->post('/postage/buy', merge( map { $_->serialize } @_ ) );
+    croak 'Buy label expects a parameter of type Net::Easypost::Shipment'
+        unless $shipment || ref($shipment) ne 'Net::Easypost::Shipment';
 
-    return Net::Easypost::Label->new(
-        rate => $resp->{rate},
-        tracking_code => $resp->{tracking_code},
-        filename => $resp->{label_file_name},
-        filetype => $resp->{label_file_type},
-        url => $resp->{label_url}
-    );
+    return $shipment->buy(%options);
 }
 
 
 sub get_label {
-    my $self = shift;
+    my ($self, $label_filename) = @_;
 
-    my $resp = $self->post('/postage/get', { label_file_name => $_[0] } );
+    my $resp = $self->requestor->post('/postage/get', { label_file_name => $label_filename } );
 
     return Net::Easypost::Label->new(
-        rate => Net::Easypost::Rate->new($resp->{rate}),
+        rate          => Net::Easypost::Rate->new( $resp->{rate} ),
         tracking_code => $resp->{tracking_code},
-        filename => $resp->{label_file_name},
-        filetype => $resp->{label_file_type},
-        url => $resp->{label_url}
+        filename      => $resp->{label_file_name},
+        filetype      => $resp->{label_file_type},
+        url           => $resp->{label_url}
     );
 }
 
@@ -128,9 +95,9 @@ sub get_label {
 sub list_labels {
     my $self = shift;
 
-    my $resp = $self->get($self->_build_url('/postage/list'));
+    my $resp = $self->requestor->get( $self->requestor->_build_url('/postage/list') );
 
-    return $resp->json->{'postages'};
+    return $resp->{postages};
 }
 
 
@@ -140,76 +107,74 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Net::Easypost - Perl client for the Easypost web service
 
 =head1 VERSION
 
-version 0.09
+version 0.10
 
 =head1 SYNOPSIS
 
-  use 5.014;
-  use Net::Easypost;
+   use Net::Easypost;
 
-  my $ezp = Net::Easypost->new(
-        access_code => 'sekrit'
-  );
+   my $to = Net::Easypost::Address->new(
+      name    => 'Johnathan Smith',
+      street1 => '710 East Water Street',
+      city    => 'Charlottesville',
+      state   => 'VA',
+      zip     => '22902',
+      phone   => '(434)555-5555',
+   );
 
-  $addr = $ezp->verify_address( {
-        street1 => '101 Spear St',
-        city => 'San Francisco',
-        zip => '94107'
-  } );
+   my $from = Net::Easypost::Address->new(
+      name    => 'Jarrett Streebin',
+      phone   => '3237078576',
+      city    => 'Half Moon Bay',
+      street1 => '310 Granelli Ave',
+      state   => 'CA',
+      zip     => '94019',
+   );
 
-  my $to = $addr->clone;
-  $to->role('to');
-  $to->name('Mr Spacely');
+   my $parcel = Net::Easypost::Parcel->new(
+      length => 10.0,
+      width  => 5.0,
+      height => 8.0,
+      weight => 10.0,
+   );
 
-  my $from = Net::Easypost::Address->new(
-        role => 'from',
-        name => 'George Jetson',
-        street1 => '1060 W Addison',
-        city => 'Chicago',
-        state => 'IL',
-        phone => '3125559797',
-        zip => '60657'
-  );
+   my $shipment = Net::Easypost::Shipment->new(
+      to_address   => $to,
+      from_address => $from,
+      parcel       => $parcel,
+   );
 
-  my $parcel = Net::Easypost::Parcel->new(
-        length => 10.0, # dimensions in inches
-        width => 12.0,  
-        height => 5.0, 
-        weight => 13.0, # weight in ounces
-  );
+   my $ezpost = Net::Easypost->new;
+   my $label = $ezpost->buy_label($shipment, ('rate' => 'lowest'));
 
-  my $service = Net::Easypost::Rate->new(
-        service => 'Priority',
-  );
-
-  my $label = $ezp->buy_label(
-        $to,
-        $from,
-        $parcel,
-        $service
-  );
-
-  printf("You paid $0.2f for your label to %s\n", $label->rate->rate, $to);
-  $label->save;
-  say ("Your postage label has been saved to ", $label->filename);
+   printf("You paid \$%0.2f for your label to %s\n", $label->rate->rate, $to);
+   $label->save;
+   printf "Your postage label has been saved to '" . $label->filename . "'\n";
 
 =head1 OVERVIEW
 
 This is a Perl client for the postage API at L<Easypost|https://www.geteasypost.com>. Consider this
 API at beta quality mostly because some of these library calls have an inconsistent input
-parameter interface which I'm not super happy about. Still, there's enough here to get 
+parameter interface which I'm not super happy about. Still, there's enough here to get
 meaningful work done, and any future changes will be fairly cosmetic.
 
 At this time, Easypost only supports United States based addresses.
 
-Please note! B<All API errors are fatal via croak>. If you need to catch errors more gracefully, I 
+Please note! B<All API errors are fatal via croak>. If you need to catch errors more gracefully, I
 recommend using L<Try::Tiny> in your implementation.
+
+API key:
+
+You must have your API key stored in an environment variable named 
+EASYPOST_API_KEY (recommended)
 
 =head1 ATTRIBUTES
 
@@ -219,11 +184,15 @@ This is the Easypost API access code which the client will use to authenticate
 calls to various endpoints. This is a required attribute which must be supplied
 at object instantiation time.
 
+=head2 requestor
+
+HTTP client to POST and GET
+
 =head1 METHODS
 
 =head2 verify_address
 
-This method attempts to validate an address. This call expects to take the same parameters 
+This method attempts to validate an address. This call expects to take the same parameters
 (in a hashref) or an instance of L<Net::Easypost::Address>, namely:
 
 =over
@@ -241,22 +210,22 @@ This method attempts to validate an address. This call expects to take the same 
 =back
 
 You may omit some of these attributes like city, state if you supply a zip, or
-zip if you supply a city, state. 
+zip if you supply a city, state.
 
 This call returns a new L<Net::Easypost::Address> object.
 
 Along with the validated address, the C<phone> and C<name> fields will be
 copied from the input parameters, if they're set.
 
-=head2 get_rate
+=head2 get_rates
 
 This method will get postage rates between two zip codes. It takes the following input parameters:
 
 =over
 
-=item * to => an instance of L<Net::Easypost::Address> with a zip in the "to" role
+=item * to => an instance of L<Net::Easypost::Address>
 
-=item * from => an instance of L<Net::Easypost::Address> with a zip in the "from" role
+=item * from => an instance of L<Net::Easypost::Address>
 
 =item * parcel => an instance of L<Net::Easypost::Parcel>
 
@@ -272,11 +241,7 @@ It takes as input:
 
 =over
 
-=item * A L<Net::Easypost::Address> object in the "to" role,
-
-=item * A L<Net::Easypost::Address> object in the "from" role,
-
-=item * A L<Net::Easypost::Parcel> object
+=item * A L<Net::Easypost::Shipment> object
 
 =item * A L<Net::Easypost::Rate> object
 
@@ -286,7 +251,7 @@ It returns a L<Net::Easypost::Label> object.
 
 =head2 get_label
 
-This method retrieves a label from a past purchase. It takes the label filename as its 
+This method retrieves a label from a past purchase. It takes the label filename as its
 only input parameter. It returns a L<Net::Easypost::Label> object.
 
 =head2 list_labels
@@ -315,7 +280,7 @@ L<https://github.com/mrallen1/Net-Easypost/issues>
 
 =head1 AUTHOR
 
-Mark Allen <mrallen1@yahoo.com>
+Mark Allen <mrallen1@yahoo.com>, Hunter McMillen <mcmillhj@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 

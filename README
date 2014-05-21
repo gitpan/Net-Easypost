@@ -2,57 +2,48 @@ NAME
     Net::Easypost - Perl client for the Easypost web service
 
 VERSION
-    version 0.09
+    version 0.10
 
 SYNOPSIS
-      use 5.014;
-      use Net::Easypost;
+       use Net::Easypost;
 
-      my $ezp = Net::Easypost->new(
-            access_code => 'sekrit'
-      );
+       my $to = Net::Easypost::Address->new(
+          name    => 'Johnathan Smith',
+          street1 => '710 East Water Street',
+          city    => 'Charlottesville',
+          state   => 'VA',
+          zip     => '22902',
+          phone   => '(434)555-5555',
+       );
 
-      $addr = $ezp->verify_address( {
-            street1 => '101 Spear St',
-            city => 'San Francisco',
-            zip => '94107'
-      } );
+       my $from = Net::Easypost::Address->new(
+          name    => 'Jarrett Streebin',
+          phone   => '3237078576',
+          city    => 'Half Moon Bay',
+          street1 => '310 Granelli Ave',
+          state   => 'CA',
+          zip     => '94019',
+       );
 
-      my $to = $addr->clone;
-      $to->role('to');
-      $to->name('Mr Spacely');
+       my $parcel = Net::Easypost::Parcel->new(
+          length => 10.0,
+          width  => 5.0,
+          height => 8.0,
+          weight => 10.0,
+       );
 
-      my $from = Net::Easypost::Address->new(
-            role => 'from',
-            name => 'George Jetson',
-            street1 => '1060 W Addison',
-            city => 'Chicago',
-            state => 'IL',
-            phone => '3125559797',
-            zip => '60657'
-      );
+       my $shipment = Net::Easypost::Shipment->new(
+          to_address   => $to,
+          from_address => $from,
+          parcel       => $parcel,
+       );
 
-      my $parcel = Net::Easypost::Parcel->new(
-            length => 10.0, # dimensions in inches
-            width => 12.0,  
-            height => 5.0, 
-            weight => 13.0, # weight in ounces
-      );
+       my $ezpost = Net::Easypost->new;
+       my $label = $ezpost->buy_label($shipment, ('rate' => 'lowest'));
 
-      my $service = Net::Easypost::Rate->new(
-            service => 'Priority',
-      );
-
-      my $label = $ezp->buy_label(
-            $to,
-            $from,
-            $parcel,
-            $service
-      );
-
-      printf("You paid $0.2f for your label to %s\n", $label->rate->rate, $to);
-      $label->save;
-      say ("Your postage label has been saved to ", $label->filename);
+       printf("You paid \$%0.2f for your label to %s\n", $label->rate->rate, $to);
+       $label->save;
+       printf "Your postage label has been saved to '" . $label->filename . "'\n";
 
 OVERVIEW
     This is a Perl client for the postage API at Easypost
@@ -68,11 +59,19 @@ OVERVIEW
     errors more gracefully, I recommend using Try::Tiny in your
     implementation.
 
+    API key:
+
+    You must have your API key stored in an environment variable named
+    EASYPOST_API_KEY (recommended)
+
 ATTRIBUTES
   access_code
     This is the Easypost API access code which the client will use to
     authenticate calls to various endpoints. This is a required attribute
     which must be supplied at object instantiation time.
+
+  requestor
+    HTTP client to POST and GET
 
 METHODS
   verify_address
@@ -98,15 +97,13 @@ METHODS
     Along with the validated address, the "phone" and "name" fields will be
     copied from the input parameters, if they're set.
 
-  get_rate
+  get_rates
     This method will get postage rates between two zip codes. It takes the
     following input parameters:
 
-    *   to => an instance of Net::Easypost::Address with a zip in the "to"
-        role
+    *   to => an instance of Net::Easypost::Address
 
-    *   from => an instance of Net::Easypost::Address with a zip in the
-        "from" role
+    *   from => an instance of Net::Easypost::Address
 
     *   parcel => an instance of Net::Easypost::Parcel
 
@@ -119,11 +116,7 @@ METHODS
 
     It takes as input:
 
-    *   A Net::Easypost::Address object in the "to" role,
-
-    *   A Net::Easypost::Address object in the "from" role,
-
-    *   A Net::Easypost::Parcel object
+    *   A Net::Easypost::Shipment object
 
     *   A Net::Easypost::Rate object
 
@@ -152,7 +145,7 @@ SEE ALSO
     *   Easypost API docs <https://www.geteasypost.com/api>
 
 AUTHOR
-    Mark Allen <mrallen1@yahoo.com>
+    Mark Allen <mrallen1@yahoo.com>, Hunter McMillen <mcmillhj@gmail.com>
 
 COPYRIGHT AND LICENSE
     This software is copyright (c) 2012 by Mark Allen.

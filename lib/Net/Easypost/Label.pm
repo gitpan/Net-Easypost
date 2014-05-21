@@ -1,72 +1,100 @@
 package Net::Easypost::Label;
-{
-  $Net::Easypost::Label::VERSION = '0.09';
-}
-
-use 5.014;
-use Moo;
+$Net::Easypost::Label::VERSION = '0.10';
 use Carp qw(croak);
 use IO::Handle;
+use Moo;
+use Net::Easypost::Request;
 
-with('Net::Easypost::Request');
-
-# ABSTRACT: Object represents an Easypost label
+with qw(Net::Easypost::Resource);
 
 
-has 'tracking_code' => (
-    is => 'ro',
+has tracking_code => (
+    is       => 'ro',
+    required => 1
 );
 
 
-has 'filename' => (
-    is => 'ro',
+has filename => (
+    is       => 'ro',
+    required => '1',
 );
 
 
-has 'filetype' => (
-    is => 'ro',
-    lazy => 1,
+has filetype => (
+    is      => 'ro',
+    lazy    => 1,
     default => sub { 'image/png' }
 );
 
 
 
-has 'url' => (
-    is => 'ro',
-    predicate => 1,
+has url => (
+   is        => 'ro',
+   predicate => 1,
+   required  => 1,
 );
 
 
-has 'rate' => (
-    is => 'ro',
+has rate => (
+   is  => 'ro',
 );
 
 
 
-has 'image' => (
-    is => 'ro',
-    lazy => 1,
+
+has image => (
+    is        => 'ro',
+    lazy      => 1,
     predicate => 1,
-    default => sub {
+    default   => sub {
         my $self = shift;
 
-        croak "can't retrieve image for " . $self->filename . 
-            " without a url" unless $self->has_url; 
+        croak "can't retrieve image for " . $self->filename . " without a url"
+            unless $self->has_url;
 
-        return $self->get($self->url)->content->asset->slurp;
+        return $self->requester->get($self->url)->content->asset->slurp;
     }
 );
+
+sub _build_role { 'label' }
+sub _build_fieldnames { [qw(tracking_code url filetype filename)] }
+
 
 
 sub save {
     my $self = shift;
 
-    $self->image unless $self->has_image;
+    $self->image
+        unless $self->has_image;
 
-    open my $fh, ">:raw", $self->filename or croak "Couldn't save " . $self->filename . ": $!";
-    print $fh $self->image;
+    open my $fh, ">:raw", $self->filename
+        or croak "Couldn't save " . $self->filename . ": $!";
+
+    print {$fh} $self->image;
     $fh->close;
+}
 
+
+sub clone {
+   my $self = shift;
+
+   return Net::Easypost::Label->new(
+      map { $_ => $self->$_ }
+         grep { defined $self->$_ }
+            'id', @{ $self->fieldnames }
+   );
+}
+
+
+sub serialize {
+   my $self = shift;
+
+   # want a hashref of e.g., role[field1] => foo from all defined attributes
+   return {
+      map { $self->role . "[$_]" => $self->$_ }
+         grep { defined $self->$_ }
+            @{ $self->fieldnames }
+   };
 }
 
 1;
@@ -75,13 +103,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
-Net::Easypost::Label - Object represents an Easypost label
+Net::Easypost::Label
 
 =head1 VERSION
 
-version 0.09
+version 0.10
 
 =head1 ATTRIBUTES
 
@@ -104,7 +134,7 @@ The URL from which to download the label image.
 
 =head2 rate
 
-This is a L<Net::Easypost::Rate> object associated with the label.
+The chosen rate for this Label
 
 =head2 image
 
@@ -127,9 +157,17 @@ Tells the caller if an image has been downloaded.
 Store the label image locally using the filename in the object. This will typically be
 in the current working directory of the caller.
 
+=head2 clone
+
+returns a new Net::Easypost::Label object that is a deep-copy of this object
+
+=head2 serialize
+
+serialized form for Label objects
+
 =head1 AUTHOR
 
-Mark Allen <mrallen1@yahoo.com>
+Mark Allen <mrallen1@yahoo.com>, Hunter McMillen <mcmillhj@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 

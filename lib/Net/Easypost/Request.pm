@@ -1,67 +1,72 @@
 package Net::Easypost::Request;
-{
-  $Net::Easypost::Request::VERSION = '0.09';
-}
-
-use 5.014;
-
-use Moo::Role;
-use Mojo::UserAgent;
+$Net::Easypost::Request::VERSION = '0.10';
 use Carp qw(croak);
+use Data::Dumper;
+use Mojo::UserAgent;
+use Moo;
 
-# ABSTRACT: Request role for Net::Easypost
 
-
-has ua => (
-    is => 'ro',
-    lazy => 1,
+has user_agent => (
+    is      => 'ro',
+    lazy    => 1,
     default => sub {
-        my $ua = Mojo::UserAgent->new();
-        $ua->name('Net::Easypost (Perl)/' . $Net::Easypost::VERSION);
+        my $user_agent = Mojo::UserAgent->new;
+        $user_agent->transactor->name(
+            'Net::Easypost (Perl)/' . $Net::Easypost::VERSION
+        );
+
+        return $user_agent;
     },
 );
 
 
 has endpoint => (
-    is => 'ro',
-    lazy => 1,
-    default => sub { 'www.geteasypost.com/api' }
+    is      => 'ro',
+    lazy    => 1,
+    default => sub { 'api.easypost.com/v2' }
 );
 
 
 sub post {
-    my $self = shift;
-    my $operation = shift;
-    my $params = shift;
+    my ($self, $operation, $params) = @_;
 
-    my $tx = $self->ua->post(
-        $self->_build_url($operation), 
-        form => $params, 
+    my $tx = $self->user_agent->post(
+        $self->_build_url($operation),
+        form => $params,
     );
 
-    if ( ! $tx->success ) {
+    if ( !$tx->success ) {
         my ($err, $code) = $tx->error;
-        croak "FATAL: " . $self->endpoint . $operation . " returned $code: $err";
+        croak $code ? "FATAL: " . $self->endpoint . $operation . " returned $code: '$err'" :
+                      "FATAL: " . $self->endpoint . $operation . " returned '$err'";
     }
 
     return $tx->res->json;
 }
 
-sub _build_url {
-    my $self = shift;
-    my $operation = shift;
 
-    return "https://" . $self->access_code . ":@" . $self->endpoint . $operation;
+sub _build_url {
+    my ($self, $operation) = @_;
+
+    if ( exists $ENV{EASYPOST_API_KEY} ) {
+        return 'https://' . $ENV{EASYPOST_API_KEY} . ':@' . $self->endpoint . $operation;
+    }
+    else {
+        croak 'Cannot find API key in access_code attribute of Net::Easypost' 
+            . ' or in an environment variable name EASYPOST_API_KEY';
+    }
 }
 
 
 sub get {
-    my $self = shift;
-    my $endpoint = shift;
+    my ($self, $endpoint) = @_;
 
-    my $tx = $self->ua->get($endpoint);
+    $endpoint = $self->_build_url($endpoint)
+        unless $endpoint =~ m/https?/;
 
-    return $tx->res;
+    return $self->user_agent->get(
+        $endpoint
+    )->res;
 }
 
 1;
@@ -70,23 +75,25 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
-Net::Easypost::Request - Request role for Net::Easypost
+Net::Easypost::Request
 
 =head1 VERSION
 
-version 0.09
+version 0.10
 
 =head1 ATTRIBUTES
 
 =head2 ua
 
-A user agent attribute. Defaults to L<Mojo::UserAgent>. 
+A user agent attribute. Defaults to L<Mojo::UserAgent>.
 
 =head2 endpoint
 
-The Easypost service endpoint. Defaults to 'https://www.geteasypost.com/api'
+The Easypost service endpoint. Defaults to 'https://api.easypost.com/v2'
 
 =head1 METHODS
 
@@ -96,6 +103,11 @@ This method uses the C<ua> attribute to generate a form post request. It takes
 an endpoint URI fragment and the parameters to be sent.  It returns JSON deserialized
 into Perl structures.
 
+=head2 _build_url
+
+Given an operation, constructs a valid Easypost URL using the specified
+EASYPOST_API_KEY
+
 =head2 get
 
 This method uses the C<ua> attribute to generate a GET request to an endpoint. It
@@ -104,7 +116,7 @@ object.
 
 =head1 AUTHOR
 
-Mark Allen <mrallen1@yahoo.com>
+Mark Allen <mrallen1@yahoo.com>, Hunter McMillen <mcmillhj@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 

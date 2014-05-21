@@ -1,57 +1,54 @@
 package Net::Easypost::Parcel;
-{
-  $Net::Easypost::Parcel::VERSION = '0.09';
-}
-
-use 5.014;
+$Net::Easypost::Parcel::VERSION = '0.10';
 use Moo;
+
+with qw(Net::Easypost::PostOnBuild);
+with qw(Net::Easypost::Resource);
 
 # ABSTRACT: An object to represent an Easypost parcel
 
 
-has 'length' => (
-
+has length => (
     is => 'rw',
 );
 
 
-has 'width' => (
+has width => (
     is => 'rw',
 );
 
 
-has 'height' => (
+has height => (
     is => 'rw',
 );
 
 
-has 'weight' => (
+has weight => (
     is => 'rw',
 );
 
 
-has 'predefined_package' => (
+has predefined_package => (
     is => 'rw',
 );
 
 
-sub serialize {
-    my $self = shift;
-    my $role = shift // 'parcel';
+sub _build_fieldnames { [qw(length width height weight predefined_package)] }
 
-    # want a hash of e.g., parcel[address1] => foo from all defined attributes 
-    my %h = map { $role . "[$_]" => $self->$_ } 
-        grep { defined $self->$_ } qw(length width height weight predefined_package);
 
-    return \%h;
-}
+sub _build_role { 'parcel' }
+
+
+sub _build_operation { '/parcels' }
 
 
 sub clone {
     my $self = shift;
 
-    return $self->new(
-        map { $_ => $self->$_ } grep { defined $self->$_ } qw(length width height weight predefined_package)    
+    return Net::Easypost::Parcel->new(
+        map { $_ => $self->$_ }
+            grep { defined $self->$_ }
+                'id', $self->fieldnames
     );
 }
 
@@ -61,13 +58,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Net::Easypost::Parcel - An object to represent an Easypost parcel
 
 =head1 VERSION
 
-version 0.09
+version 0.10
 
 =head1 ATTRIBUTES
 
@@ -89,21 +88,29 @@ The weight of the parcel in ounces. (There are 16 ounces in a U.S. pound.)
 
 =head2 predefined_package
 
-A carrier specific flat-rate package name. See L<https://www.geteasypost.com/api> for these.
+A carrier specific flat-rate package name. See L<https://www.easypost.com/docs/api/#predefined-packages> for these.
 
 =head1 METHODS
 
-=head2 serialize
+=head2 _build_fieldnames
 
-Format this object into a form suitable for use with the Easypost service.
+Attributes that make up an Parcel, from L<Net::Easypost::Resource>
+
+=head2 _build_role
+
+Prefix to data when POSTing to the Easypost API about Parcel objects
+
+=head2 _build_operation
+
+Base API endpoint for operations on Address objects
 
 =head2 clone
 
-Make a new copy of this object.
+returns a new Net::Easypost::Parcel object that is a deep-copy of this object
 
 =head1 AUTHOR
 
-Mark Allen <mrallen1@yahoo.com>
+Mark Allen <mrallen1@yahoo.com>, Hunter McMillen <mcmillhj@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 

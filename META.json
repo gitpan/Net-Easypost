@@ -1,10 +1,10 @@
 {
    "abstract" : "Perl client for the Easypost web service",
    "author" : [
-      "Mark Allen <mrallen1@yahoo.com>"
+      "Mark Allen <mrallen1@yahoo.com>, Hunter McMillen <mcmillhj@gmail.com>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 4.300035, CPAN::Meta::Converter version 2.120921",
+   "generated_by" : "Dist::Zilla version 5.019, CPAN::Meta::Converter version 2.141170",
    "license" : [
       "perl_5"
    ],
@@ -22,10 +22,10 @@
       "runtime" : {
          "requires" : {
             "Hash::Merge::Simple" : "0.051",
-            "IO::Socket::SSL" : "1.89",
-            "Mojolicious" : "3.62",
-            "Moo" : "1.000006",
-            "perl" : "5.014"
+            "IO::Socket::SSL" : "1.962",
+            "Mojolicious" : "4.66",
+            "Moo" : "1.004002",
+            "perl" : "5.016"
          }
       }
    },
@@ -42,6 +42,6 @@
          "web" : "https://github.com/mrallen1/Net-Easypost"
       }
    },
-   "version" : "0.09"
+   "version" : "0.10"
 }
 
