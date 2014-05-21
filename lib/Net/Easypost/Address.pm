@@ -1,5 +1,5 @@
 package Net::Easypost::Address;
-$Net::Easypost::Address::VERSION = '0.10';
+$Net::Easypost::Address::VERSION = '0.11';
 use Carp qw(croak);
 use Moo;
 use Scalar::Util;
@@ -124,7 +124,7 @@ Net::Easypost::Address - Class to represent an Easypost address
 
 =head1 VERSION
 
-version 0.10
+version 0.11
 
 =head1 ATTRIBUTES
 

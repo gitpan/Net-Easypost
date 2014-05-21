@@ -1,5 +1,5 @@
 package Net::Easypost::Request;
-$Net::Easypost::Request::VERSION = '0.10';
+$Net::Easypost::Request::VERSION = '0.11';
 use Carp qw(croak);
 use Data::Dumper;
 use Mojo::UserAgent;
@@ -83,7 +83,7 @@ Net::Easypost::Request
 
 =head1 VERSION
 
-version 0.10
+version 0.11
 
 =head1 ATTRIBUTES
 

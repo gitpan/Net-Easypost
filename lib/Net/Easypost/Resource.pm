@@ -1,5 +1,5 @@
 package Net::Easypost::Resource;
-$Net::Easypost::Resource::VERSION = '0.10';
+$Net::Easypost::Resource::VERSION = '0.11';
 use Carp qw(croak);
 use Moo::Role;
 use Net::Easypost::Request;
@@ -51,7 +51,7 @@ Net::Easypost::Resource
 
 =head1 VERSION
 
-version 0.10
+version 0.11
 
 =head1 ATTRIBUTES
 

@@ -2,7 +2,7 @@ NAME
     Net::Easypost - Perl client for the Easypost web service
 
 VERSION
-    version 0.10
+    version 0.11
 
 SYNOPSIS
        use Net::Easypost;
@@ -65,11 +65,6 @@ OVERVIEW
     EASYPOST_API_KEY (recommended)
 
 ATTRIBUTES
-  access_code
-    This is the Easypost API access code which the client will use to
-    authenticate calls to various endpoints. This is a required attribute
-    which must be supplied at object instantiation time.
-
   requestor
     HTTP client to POST and GET
 

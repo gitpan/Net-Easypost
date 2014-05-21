@@ -1,5 +1,5 @@
 package Net::Easypost::Parcel;
-$Net::Easypost::Parcel::VERSION = '0.10';
+$Net::Easypost::Parcel::VERSION = '0.11';
 use Moo;
 
 with qw(Net::Easypost::PostOnBuild);
@@ -66,7 +66,7 @@ Net::Easypost::Parcel - An object to represent an Easypost parcel
 
 =head1 VERSION
 
-version 0.10
+version 0.11
 
 =head1 ATTRIBUTES
 

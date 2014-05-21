@@ -1,5 +1,5 @@
-package Net::Easypost v0.0.10;
-$Net::Easypost::VERSION = '0.10';
+package Net::Easypost;
+$Net::Easypost::VERSION = '0.11';
 use Data::Dumper;
 use Carp qw(croak);
 use Hash::Merge::Simple qw(merge);
@@ -14,11 +14,6 @@ use Net::Easypost::Shipment;
 
 # ABSTRACT: Perl client for the Easypost web service
 
-
-
-has 'access_code' => (
-    is => 'ro',
-);
 
 
 has requestor => (
@@ -115,7 +110,7 @@ Net::Easypost - Perl client for the Easypost web service
 
 =head1 VERSION
 
-version 0.10
+version 0.11
 
 =head1 SYNOPSIS
 
@@ -177,12 +172,6 @@ You must have your API key stored in an environment variable named
 EASYPOST_API_KEY (recommended)
 
 =head1 ATTRIBUTES
-
-=head2 access_code
-
-This is the Easypost API access code which the client will use to authenticate
-calls to various endpoints. This is a required attribute which must be supplied
-at object instantiation time.
 
 =head2 requestor
 

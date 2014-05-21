@@ -1,5 +1,5 @@
 package Net::Easypost::Shipment;
-$Net::Easypost::Shipment::VERSION = '0.10';
+$Net::Easypost::Shipment::VERSION = '0.11';
 use Carp qw(croak);
 use Data::Dumper;
 use Moo;
@@ -166,7 +166,7 @@ Net::Easypost::Shipment
 
 =head1 VERSION
 
-version 0.10
+version 0.11
 
 =head1 ATTRIBUTES
 
