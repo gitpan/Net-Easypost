@@ -1,5 +1,5 @@
 package Net::Easypost;
-$Net::Easypost::VERSION = '0.11';
+$Net::Easypost::VERSION = '0.12';
 use Data::Dumper;
 use Carp qw(croak);
 use Hash::Merge::Simple qw(merge);
@@ -110,7 +110,7 @@ Net::Easypost - Perl client for the Easypost web service
 
 =head1 VERSION
 
-version 0.11
+version 0.12
 
 =head1 SYNOPSIS
 

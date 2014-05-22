@@ -1,5 +1,5 @@
 package Net::Easypost::Label;
-$Net::Easypost::Label::VERSION = '0.11';
+$Net::Easypost::Label::VERSION = '0.12';
 use Carp qw(croak);
 use IO::Handle;
 use Moo;
@@ -111,7 +111,7 @@ Net::Easypost::Label
 
 =head1 VERSION
 
-version 0.11
+version 0.12
 
 =head1 ATTRIBUTES
 
