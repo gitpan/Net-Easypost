@@ -1,5 +1,5 @@
 package Net::Easypost::PostOnBuild;
-$Net::Easypost::PostOnBuild::VERSION = '0.12';
+$Net::Easypost::PostOnBuild::VERSION = '0.13';
 use Moo::Role;
 
 sub BUILD {}
@@ -40,7 +40,7 @@ Net::Easypost::PostOnBuild
 
 =head1 VERSION
 
-version 0.12
+version 0.13
 
 =head1 METHODS
 

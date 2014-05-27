@@ -25,6 +25,7 @@
             "IO::Socket::SSL" : "1.962",
             "Mojolicious" : "4.66",
             "Moo" : "1.004002",
+            "Types::Standard" : "0.040",
             "perl" : "5.016"
          }
       }
@@ -42,6 +43,6 @@
          "web" : "https://github.com/mrallen1/Net-Easypost"
       }
    },
-   "version" : "0.12"
+   "version" : "0.13"
 }
 

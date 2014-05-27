@@ -23,9 +23,10 @@ my %WriteMakefileArgs = (
     "Hash::Merge::Simple" => "0.051",
     "IO::Socket::SSL" => "1.962",
     "Mojolicious" => "4.66",
-    "Moo" => "1.004002"
+    "Moo" => "1.004002",
+    "Types::Standard" => "0.040"
   },
-  "VERSION" => "0.12",
+  "VERSION" => "0.13",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -36,7 +37,8 @@ my %FallbackPrereqs = (
   "Hash::Merge::Simple" => "0.051",
   "IO::Socket::SSL" => "1.962",
   "Mojolicious" => "4.66",
-  "Moo" => "1.004002"
+  "Moo" => "1.004002",
+  "Types::Standard" => "0.040"
 );
 
 
